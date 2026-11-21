@@ -1,0 +1,19 @@
+/// Focus an explicit window and type text into its current text target.
+fn type_in(window_id, text) {
+    window.focus(id=window_id)
+    wait(ms=200)
+    keyboard.type(window=window_id, text=text)
+}
+
+/// Focus an explicit window and submit a named key or chord.
+fn key_in(window_id, key) {
+    window.focus(id=window_id)
+    wait(ms=200)
+    keyboard.key(window=window_id, key=key)
+}
+
+/// Focus an explicitly observed accessibility node and replace its text value.
+fn set_text(node_path, text) {
+    accessibility.focus(path=node_path)
+    accessibility.set_text(path=node_path, text=text)
+}

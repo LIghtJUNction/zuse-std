@@ -1,0 +1,35 @@
+/// List windows and report currently held keyboard modifiers without sending input.
+fn inspect() {
+    window.list()
+    keyboard.state()
+}
+
+/// Focus an explicitly observed window, then allow 200 ms for focus delivery.
+fn focus(window_id) {
+    window.focus(id=window_id)
+    wait(ms=200)
+}
+
+/// Focus a window, borrow the system pointer, and bind a window-local canvas region.
+fn bind_canvas(name, window_id, x, y, width, height) {
+    focus(window_id=window_id)
+    mouse.use(kind="user", appearance="system")
+    anchor.set(name=name, window=window_id, x=x, y=y, width=width, height=height)
+}
+
+/// Click an anchored point with 30 ms input settling and 70 ms application settling.
+fn click(canvas, x, y) {
+    mouse.click_at(anchor=canvas, x=x, y=y, button="left", settle=30)
+    wait(ms=70)
+}
+
+/// Save a screenshot of an explicitly observed window to the requested path.
+fn capture(window_id, path) {
+    window.capture(id=window_id, path=path)
+}
+
+/// Remove a canvas anchor and release this session's mouse handle.
+fn release_canvas(name) {
+    anchor.clear(name=name)
+    mouse.release()
+}

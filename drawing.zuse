@@ -1,0 +1,30 @@
+/// Draw an anchored polyline with the caller's duration and 30 ms settling.
+fn stroke(canvas, points, duration) {
+    mouse.stroke(anchor=canvas, points=points, duration=duration, settle=30, button="left")
+}
+
+/// Draw an anchored line over 180 ms using the application's current brush.
+fn line(canvas, x1, y1, x2, y2) {
+    draw.line(anchor=canvas, x1=x1, y1=y1, x2=x2, y2=y2, duration=180, settle=30)
+}
+
+/// Outline an anchored rectangle over 240 ms; width and height must be positive.
+fn rectangle(canvas, x, y, width, height) {
+    draw.rect(anchor=canvas, x=x, y=y, width=width, height=height, duration=240, settle=30)
+}
+
+/// Outline an anchored circle with 64 segments over 360 ms.
+fn circle(canvas, x, y, radius) {
+    draw.circle(anchor=canvas, x=x, y=y, radius=radius, steps=64, duration=360, settle=30)
+}
+
+/// Close and outline an anchored polygon with the caller's duration.
+fn polygon(canvas, points, duration) {
+    draw.polygon(anchor=canvas, points=points, duration=duration, settle=30)
+}
+
+/// Draw a shaft and a caller-supplied arrowhead polyline; coordinates are explicit.
+fn arrow(canvas, x1, y1, x2, y2, head) {
+    line(canvas=canvas, x1=x1, y1=y1, x2=x2, y2=y2)
+    stroke(canvas=canvas, points=head, duration=240)
+}

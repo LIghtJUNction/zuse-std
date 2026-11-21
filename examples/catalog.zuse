@@ -1,0 +1,3 @@
+# Safe to execute: import declarations, then inspect their metadata.
+import(path="../lib.zuse", as="std")
+functions(namespace="std")

@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "name": "std",
+  "version": "0.1.0",
+  "entry": "lib.zuse",
+  "exports": {
+    "desktop": "desktop.zuse",
+    "drawing": "drawing.zuse",
+    "input": "input.zuse",
+    "timing": "timing.zuse"
+  },
+  "dependencies": {}
+}

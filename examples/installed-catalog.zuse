@@ -1,0 +1,4 @@
+# Run from a project that has installed this package.
+# Safe to execute: no desktop actions occur.
+import(path="pkg:std", as="std")
+functions(namespace="std")

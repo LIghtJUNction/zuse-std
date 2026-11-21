@@ -1,0 +1,24 @@
+/// Start a fresh timer if stopped; preserve an already running timer.
+fn start() {
+    timer.start()
+}
+
+/// Stop the session timer and return its measurement.
+fn stop() {
+    timer.stop()
+}
+
+/// Inspect the session timer without changing it.
+fn status() {
+    timer.status()
+}
+
+/// Clear all timer measurements and start timing immediately.
+fn reset() {
+    timer.reset()
+}
+
+/// Wait for an explicit number of milliseconds within the caller's wait budget.
+fn pause(ms) {
+    wait(ms=ms)
+}
