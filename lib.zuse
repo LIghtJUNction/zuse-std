@@ -1,5 +1,6 @@
-# Register the four standard-library namespaces. Importing performs no input.
+# Register the five standard-library namespaces. Importing performs no input.
 import(path="desktop.zuse", as="desktop")
 import(path="drawing.zuse", as="drawing")
+import(path="fractal.zuse", as="fractal")
 import(path="input.zuse", as="input")
 import(path="timing.zuse", as="timing")

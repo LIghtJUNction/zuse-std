@@ -6,6 +6,7 @@
   "exports": {
     "desktop": "desktop.zuse",
     "drawing": "drawing.zuse",
+    "fractal": "fractal.zuse",
     "input": "input.zuse",
     "timing": "timing.zuse"
   },

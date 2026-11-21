@@ -1,12 +1,12 @@
 # Zuse standard library
 
-Reusable Zuse functions for drawing, desktop setup, explicit text input, and timing.
+Reusable Zuse functions for drawing, fractals, desktop setup, explicit text input, and timing.
 The `std` package is source code: installation stores a pinned Git commit locally,
 and `import` registers its functions. Desktop actions begin when a script calls them.
 
 Version `0.1.0` requires Zuse **0.6.0 or later**, with `pkg`, window anchors,
-`mouse.stroke`, and the `draw.*` primitives. Use `zuse --version` and `zuse schema`
-to check the installed build.
+`mouse.stroke`, `draw.triangle`, and bounded scalar programs. Use `zuse --version`
+and `zuse schema` to check the installed build.
 
 ## Install and inspect
 
@@ -34,8 +34,9 @@ manager remain part of the installation process.
 
 ## Import a module
 
-Import the whole library for `std.desktop`, `std.drawing`, `std.input`, and
-`std.timing`. Import one export when a script needs a smaller namespace:
+Import the whole library for `std.desktop`, `std.drawing`, `std.fractal`,
+`std.input`, and `std.timing`: 22 functions across five exports.
+Import one export when a script needs a smaller namespace:
 
 ```zuse
 import(path="pkg:std/drawing", as="art")
@@ -56,10 +57,12 @@ public function. Source files are the authoritative implementation.
 | desktop | `release_canvas(name)` | Clear the named anchor and release the session's mouse handle. |
 | [drawing](drawing.zuse) | `stroke(canvas,points,duration)` | Draw an open polyline with explicit timing. |
 | drawing | `line(canvas,x1,y1,x2,y2)` | Draw a line in 180 ms. |
+| drawing | `triangle(canvas,x1,y1,x2,y2,x3,y3)` | Outline three numeric vertices in one 240 ms stroke. |
 | drawing | `rectangle(canvas,x,y,width,height)` | Outline a rectangle in 240 ms. |
 | drawing | `circle(canvas,x,y,radius)` | Outline a circle with 64 segments in 360 ms. |
 | drawing | `polygon(canvas,points,duration)` | Close and outline a polygon with explicit timing. |
 | drawing | `arrow(canvas,x1,y1,x2,y2,head)` | Draw a line and an explicitly supplied arrowhead polyline. |
+| [fractal](fractal.zuse) | `sierpinski(canvas,x,y,width,height,depth)` | Compute and draw a Sierpinski triangle using bounded Zuse recursion. |
 | [input](input.zuse) | `type_in(window_id,text)` | Focus the specified window, wait 200 ms, then type into its current text target. |
 | input | `key_in(window_id,key)` | Focus the specified window, wait 200 ms, then submit a key or chord. |
 | input | `set_text(node_path,text)` | Focus an observed accessibility node and replace its text. |
@@ -86,8 +89,9 @@ std.desktop.release_canvas(name="board")
 
 The drawing functions use the application's current brush and left mouse
 button. They outline shapes; they do not set colors or fill areas. `points` and
-`head` use `x,y;x,y` strings. The arrowhead is supplied explicitly because Zuse
-function parameters currently support substitution, not coordinate arithmetic.
+`head` use `x,y;x,y` strings. The arrow helper accepts explicit head vertices so
+callers can choose its shape. Numeric geometry, including recursive subdivision,
+can be calculated directly in Zuse expressions.
 
 Coordinates are local to the named canvas anchor. The runtime rejects an anchor
 when its window identity, focus, position, dimensions, or scale changes. It does
@@ -100,6 +104,33 @@ application-readiness detection. For long workflows, use the runtime's bounded
 observation and waiting primitives. Multiple scripts can retain functions and
 anchors in `zuse shell`; its idle timeout controls cleanup of the session.
 
+## Draw a fractal with Zuse expressions
+
+The [fractal module](fractal.zuse) computes every vertex with `let`, arithmetic,
+`if/else`, and recursive function calls. Each leaf uses one `draw.triangle`
+stroke. It contains no precomputed coordinate arrays and needs no external
+program to generate the geometry.
+
+Observe the window and canvas first, select the application's brush and color,
+then replace the window ID and anchor region below. This example assumes an
+observed 755 × 646 canvas and passes the complete program to Zuse through stdin:
+
+```sh
+zuse script - --max-steps 4096 --max-wait-ms 90000 <<'ZUSE'
+import(path="pkg:std", as="std")
+std.desktop.bind_canvas(name="board", window_id="OBSERVED_WINDOW_ID", x=160, y=180, width=755, height=646)
+std.fractal.sierpinski(canvas="board", x=50, y=590, width=650, height=560, depth=5)
+std.desktop.capture(window_id="OBSERVED_WINDOW_ID", path="fractal.png")
+std.desktop.release_canvas(name="board")
+ZUSE
+```
+
+`x,y` identify the left end of the base; `height` extends upward on the screen.
+Depth 0 draws one triangle, depth 2 draws 9, and depth 5 draws 243. Each leaf uses
+60 ms of motion and two 10 ms settling waits, so depth 5 has a fixed drawing wait
+budget of 19,440 ms. Window checks and input dispatch add elapsed time.
+For a smaller namespace, import `pkg:std/fractal` with an explicit alias.
+
 ## Validate the package
 
 These commands load declarations, inspect the catalog, and validate every
@@ -110,7 +141,7 @@ zuse run examples/catalog.zuse
 zuse check examples/validate-api.zuse
 ```
 
-The validation fixture intentionally contains placeholder window and node IDs.
+The validation fixture intentionally contains a placeholder window ID and an example node path.
 Use `check` for that file. To verify an installed package, run the safe catalog
 example from the consuming project, or execute the inline catalog command in
 the installation section.

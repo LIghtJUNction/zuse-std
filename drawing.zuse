@@ -8,6 +8,11 @@ fn line(canvas, x1, y1, x2, y2) {
     draw.line(anchor=canvas, x1=x1, y1=y1, x2=x2, y2=y2, duration=180, settle=30)
 }
 
+/// Outline a triangle from three numeric vertices in one 240 ms stroke.
+fn triangle(canvas, x1, y1, x2, y2, x3, y3) {
+    draw.triangle(anchor=canvas, x1=x1, y1=y1, x2=x2, y2=y2, x3=x3, y3=y3, duration=240, settle=30)
+}
+
 /// Outline an anchored rectangle over 240 ms; width and height must be positive.
 fn rectangle(canvas, x, y, width, height) {
     draw.rect(anchor=canvas, x=x, y=y, width=width, height=height, duration=240, settle=30)

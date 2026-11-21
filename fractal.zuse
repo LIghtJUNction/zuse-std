@@ -1,0 +1,24 @@
+# Declaration-only example. Import this file into a prepared drawing session.
+# Select the application's brush/color and bind an observed canvas anchor first.
+# For a 755 x 646 region: x=50, y=590, width=650, height=560, depth=5.
+# Depth 5 expands to 243 closed triangle strokes, with a 19,440 ms wait budget.
+
+/// Draw a Sierpinski triangle inside an existing canvas anchor using bounded recursion.
+fn sierpinski(canvas, x, y, width, height, depth) {
+    if depth <= 0 {
+        draw.triangle(
+            anchor=canvas,
+            x1=x, y1=y,
+            x2=x+width, y2=y,
+            x3=x+width/2, y3=y-height,
+            duration=60, settle=10
+        )
+    } else {
+        let half_width = width / 2
+        let half_height = height / 2
+        let next_depth = depth - 1
+        sierpinski(canvas=canvas, x=x, y=y, width=half_width, height=half_height, depth=next_depth)
+        sierpinski(canvas=canvas, x=x+half_width, y=y, width=half_width, height=half_height, depth=next_depth)
+        sierpinski(canvas=canvas, x=x+width/4, y=y-half_height, width=half_width, height=half_height, depth=next_depth)
+    }
+}
